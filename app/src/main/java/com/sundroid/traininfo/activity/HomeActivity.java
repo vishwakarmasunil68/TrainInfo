@@ -2,6 +2,7 @@ package com.sundroid.traininfo.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -20,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.sundroid.traininfo.R;
 
@@ -95,17 +95,21 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(HomeActivity.this, "You Clicked at "+position , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(HomeActivity.this, "You Clicked at "+position , Toast.LENGTH_SHORT).show();
+                GridItemClick(position);
             }
         });
     }
     public void GridItemClick(int position){
         switch (position){
             case 0:
+                startActivity(new Intent(HomeActivity.this,LiveTrainStatusActivity.class));
                 break;
             case 1:
+                startActivity(new Intent(HomeActivity.this,PNRStatusActivity.class));
                 break;
             case 2:
+                startActivity(new Intent(HomeActivity.this,TrainRouteActivity.class));
                 break;
             case 3:
                 break;

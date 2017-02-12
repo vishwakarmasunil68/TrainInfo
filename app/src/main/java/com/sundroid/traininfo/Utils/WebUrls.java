@@ -9,14 +9,14 @@ public class WebUrls {
     public final static String BASE_URL="http://api.railwayapi.com";
 
     public static String getLiveTrainURL(String train_number,String date){
-        return BASE_URL+"/live/train/"+train_number+"/doj/"+date+"/apikey/"+API_KEY+"/";
+        return BASE_URL+"/live/train/"+train_number+"/doj/"+date+"/apikey/"+API_KEY;
     }
 
     public static String getPNRStatusURL(String pnr_no){
         return BASE_URL+"/pnr_status/pnr/"+pnr_no+"/apikey/"+API_KEY;
     }
 
-    public static String getTrainStatusURL(String train_no){
+    public static String getTrainRouteStatusURL(String train_no){
         return BASE_URL+"/route/train/"+train_no+"/apikey/"+API_KEY;
     }
     public static String getSeatAvailabilityURL(String train_no,String source_code,String destination_code,
