@@ -25,7 +25,12 @@
         <activity android:name=".activity.LiveTrainStatusActivity" />
         <activity android:name=".activity.HomeActivity" />
         <activity android:name=".activity.PNRStatusActivity" />
-        <activity android:name=".activity.TrainRouteActivity"></activity>
+        <activity android:name=".activity.TrainRouteActivity" />
+        <activity android:name=".activity.SeatAvailability" />
+        <activity android:name=".activity.TrainBetweenStationActivity" />
+        <activity android:name=".activity.TrainNameNumberActivity" />
+        <activity android:name=".activity.TrainFareEnquiryActivity" />
+        <activity android:name=".activity.TrainArrivalAtStationActivity"></activity>
     </application>
 
 </manifest>

@@ -24,11 +24,11 @@ public class WebUrls {
         return BASE_URL+"/check_seat/train/"+train_no+"/source/"+source_code+"/dest/"+destination_code+
                 "/date/"+date+"/class/"+class_type+"/quota/"+quota+"/apikey/"+API_KEY;
     }
-    public static String getTrainBetweenStatusURL(String source_code,String destination_code){
-        return BASE_URL+"/between/source/"+source_code+"/dest/"+destination_code+"/date/dd-mm/apikey/"+API_KEY;
+    public static String getTrainBetweenStationURL(String source_code,String destination_code,String date){
+        return BASE_URL+"/between/source/"+source_code+"/dest/"+destination_code+"/date/"+date+"/apikey/"+API_KEY;
     }
 
-    public static String getTrainNameURL(String name_num){
+    public static String getTrainNameNumberURL(String name_num){
         return BASE_URL+"/name_number/train/"+name_num+"/apikey/"+API_KEY;
     }
 

@@ -112,12 +112,19 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeActivity.this,TrainRouteActivity.class));
                 break;
             case 3:
+                startActivity(new Intent(HomeActivity.this,SeatAvailability.class));
+
                 break;
             case 4:
+                startActivity(new Intent(HomeActivity.this,TrainBetweenStationActivity.class));
+
                 break;
             case 5:
+                startActivity(new Intent(HomeActivity.this,TrainNameNumberActivity.class));
                 break;
             case 6:
+                startActivity(new Intent(HomeActivity.this,TrainFareEnquiryActivity.class));
+
                 break;
             case 7:
                 break;
