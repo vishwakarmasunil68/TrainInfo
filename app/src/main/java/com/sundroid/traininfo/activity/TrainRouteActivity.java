@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.pojo.trainroute.TrainRoutePOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 
@@ -82,8 +84,25 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
         String resposne=msg[1];
         switch (apicall){
             case TRAIN_ROUTE_API_CALL:
-                Log.d(TAG,"response:-"+resposne);
+//                Log.d(TAG,"response:-"+resposne);
+                parseTrainRouteResponse(resposne);
                 break;
+        }
+    }
+    public void parseTrainRouteResponse(String response){
+        Gson gson=new Gson();
+        TrainRoutePOJO pojo=gson.fromJson(response,TrainRoutePOJO.class);
+        if(pojo!=null){
+            try{
+                if(pojo.getResponse_code().equals("200")){
+                    Log.d(TAG,"train route response:-"+pojo.toString());
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (Exception e){
+                Log.d(TAG,"error:-"+e.toString());
+            }
         }
     }
 }
