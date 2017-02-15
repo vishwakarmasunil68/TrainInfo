@@ -11,8 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.pojo.trainbetween.TrainBetweenStationPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -108,8 +110,25 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
         String response=msg[1];
         switch (apicall){
             case TRAIN_BETWEEN_STATION:
-                Log.d(TAG,"response:-"+response);
+//                Log.d(TAG,"response:-"+response);
+                parseTrainBetweenStationResponse(response);
                 break;
+        }
+    }
+    public void parseTrainBetweenStationResponse(String response){
+        Gson gson=new Gson();
+        TrainBetweenStationPOJO pojo=gson.fromJson(response,TrainBetweenStationPOJO.class);
+        if(pojo!=null){
+            try{
+                if(pojo.getResponse_code().equals("200")){
+                    Log.d(TAG,"Train Between response:-"+pojo.toString());
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (Exception e){
+                Log.d(TAG,"error:-"+e.toString());
+            }
         }
     }
 
