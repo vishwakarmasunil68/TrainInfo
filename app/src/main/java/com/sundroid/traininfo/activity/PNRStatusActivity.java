@@ -96,7 +96,7 @@ public class PNRStatusActivity extends AppCompatActivity implements WebServicesC
         if(pojo!=null){
             try{
                 if(pojo.getResponse_code().equals("200")){
-                    Log.d(TAG,"train route response:-"+pojo.toString());
+                    Log.d(TAG,"pnr status response:-"+pojo.toString());
                 }else{
                     Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
                 }
