@@ -34,7 +34,7 @@ public class WebUrls {
 
     public static String getTrainFairURL(String train_number,String source_station_code,String destination,
                                          String age,String quota,String date){
-        return BASE_URL+"/fare/TrainPOJO/"+train_number+"/source/"+source_station_code+"/dest/"+destination+
+        return BASE_URL+"/fare/train/"+train_number+"/source/"+source_station_code+"/dest/"+destination+
                 "/age/"+age+"/quota/"+quota+"/doj/"+date+"/apikey/"+API_KEY;
     }
     public static String getTrainArrivalsURL(String station_code,String hours_to_search){
