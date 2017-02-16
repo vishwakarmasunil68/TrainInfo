@@ -121,7 +121,7 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
         if(pojo!=null){
             try{
                 if(pojo.getResponse_code().equals("200")){
-                    Log.d(TAG,"Train Between response:-"+pojo.toString());
+                    Log.d(TAG,"TrainPOJO Between response:-"+pojo.toString());
                 }else{
                     Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
                 }

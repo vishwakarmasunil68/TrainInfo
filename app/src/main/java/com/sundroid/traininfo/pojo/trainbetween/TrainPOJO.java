@@ -11,7 +11,7 @@ import java.util.List;
 public class TrainPOJO {
     @SerializedName("classes")
     List<ClassesPOJO> list_classes;
-    @SerializedName("days")
+    @SerializedName("DaysPOJO")
     List<DaysPOJO> list_days;
     @SerializedName("number")
     String number;

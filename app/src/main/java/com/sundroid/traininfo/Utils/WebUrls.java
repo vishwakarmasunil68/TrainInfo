@@ -9,7 +9,7 @@ public class WebUrls {
     public final static String BASE_URL="http://api.railwayapi.com";
 
     public static String getLiveTrainURL(String train_number,String date){
-        return BASE_URL+"/live/train/"+train_number+"/doj/"+date+"/apikey/"+API_KEY;
+        return BASE_URL+"/live/TrainPOJO/"+train_number+"/doj/"+date+"/apikey/"+API_KEY;
     }
 
     public static String getPNRStatusURL(String pnr_no){
@@ -17,11 +17,11 @@ public class WebUrls {
     }
 
     public static String getTrainRouteStatusURL(String train_no){
-        return BASE_URL+"/route/train/"+train_no+"/apikey/"+API_KEY;
+        return BASE_URL+"/route/TrainPOJO/"+train_no+"/apikey/"+API_KEY;
     }
     public static String getSeatAvailabilityURL(String train_no,String source_code,String destination_code,
                                                 String date,String class_type,String quota){
-        return BASE_URL+"/check_seat/train/"+train_no+"/source/"+source_code+"/dest/"+destination_code+
+        return BASE_URL+"/check_seat/TrainPOJO/"+train_no+"/source/"+source_code+"/dest/"+destination_code+
                 "/date/"+date+"/class/"+class_type+"/quota/"+quota+"/apikey/"+API_KEY;
     }
     public static String getTrainBetweenStationURL(String source_code,String destination_code,String date){
@@ -29,12 +29,12 @@ public class WebUrls {
     }
 
     public static String getTrainNameNumberURL(String name_num){
-        return BASE_URL+"/name_number/train/"+name_num+"/apikey/"+API_KEY;
+        return BASE_URL+"/name_number/TrainPOJO/"+name_num+"/apikey/"+API_KEY;
     }
 
     public static String getTrainFairURL(String train_number,String source_station_code,String destination,
                                          String age,String quota,String date){
-        return BASE_URL+"/fare/train/"+train_number+"/source/"+source_station_code+"/dest/"+destination+
+        return BASE_URL+"/fare/TrainPOJO/"+train_number+"/source/"+source_station_code+"/dest/"+destination+
                 "/age/"+age+"/quota/"+quota+"/doj/"+date+"/apikey/"+API_KEY;
     }
     public static String getTrainArrivalsURL(String station_code,String hours_to_search){

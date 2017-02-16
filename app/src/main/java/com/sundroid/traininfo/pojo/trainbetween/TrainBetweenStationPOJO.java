@@ -13,7 +13,7 @@ public class TrainBetweenStationPOJO {
     String response_code;
     @SerializedName("error")
     String error;
-    @SerializedName("train")
+    @SerializedName("TrainPOJO")
     List<TrainPOJO> list_train_pojo;
     @SerializedName("total")
     String total;

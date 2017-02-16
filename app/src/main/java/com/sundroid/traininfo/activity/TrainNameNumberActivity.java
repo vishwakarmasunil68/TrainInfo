@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.pojo.trainnamenumber.TrainNameNumberPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 
@@ -89,6 +91,20 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
         }
     }
     public void parseTrainResponse(String response){
-        Log.d(TAG,"response:-"+response);
+//        Log.d(TAG,"response:-"+response);
+        Gson gson=new Gson();
+        TrainNameNumberPOJO pojo=gson.fromJson(response,TrainNameNumberPOJO.class);
+        if(pojo!=null){
+            try{
+                if(pojo.getResponse_code().equals("200")){
+                    Log.d(TAG,"TrainPOJO route response:-"+pojo.toString());
+                }else{
+                    Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
+                }
+            }
+            catch (Exception e){
+                Log.d(TAG,"error:-"+e.toString());
+            }
+        }
     }
 }

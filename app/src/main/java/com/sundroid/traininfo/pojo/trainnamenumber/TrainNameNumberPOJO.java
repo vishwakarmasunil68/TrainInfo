@@ -1,20 +1,16 @@
-package com.sundroid.traininfo.pojo.trainroute;
+package com.sundroid.traininfo.pojo.trainnamenumber;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.util.List;
 
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class TrainRoutePOJO {
+public class TrainNameNumberPOJO {
     @SerializedName("response_code")
     String response_code;
-    @SerializedName("TrainPOJO")
+    @SerializedName("train")
     TrainPOJO train_pojo;
-    @SerializedName("route")
-    List<RoutePOJO> list_route_pojo;
 
     public String getResponse_code() {
         return response_code;
@@ -32,20 +28,11 @@ public class TrainRoutePOJO {
         this.train_pojo = train_pojo;
     }
 
-    public List<RoutePOJO> getList_route_pojo() {
-        return list_route_pojo;
-    }
-
-    public void setList_route_pojo(List<RoutePOJO> list_route_pojo) {
-        this.list_route_pojo = list_route_pojo;
-    }
-
     @Override
     public String toString() {
-        return "TrainRoutePOJO{" +
+        return "TrainNameNumberPOJO{" +
                 "response_code='" + response_code + '\'' +
                 ", train_pojo=" + train_pojo +
-                ", list_route_pojo=" + list_route_pojo +
                 '}';
     }
 }

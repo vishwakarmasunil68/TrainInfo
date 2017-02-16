@@ -73,19 +73,19 @@ public class HomeActivity extends AppCompatActivity {
         list_item_images.add(R.drawable.ic_launcher);
         list_item_images.add(R.drawable.ic_launcher);
 
-        list_item_text.add("Live TrainPOJO Status");
+        list_item_text.add("Live Train Status");
         list_item_text.add("PNR status");
-        list_item_text.add("TrainPOJO Route");
+        list_item_text.add("Train Route");
         list_item_text.add("Seat Availability");
-        list_item_text.add("TrainPOJO Between Station");
-        list_item_text.add("TrainPOJO Name/Number");
-        list_item_text.add("TrainPOJO Fair Enquiry");
-        list_item_text.add("TrainPOJO Arrival at station");
-        list_item_text.add("Cancelled TrainPOJO");
+        list_item_text.add("Train Between Station");
+        list_item_text.add("Train Name/Number");
+        list_item_text.add("Train Fair Enquiry");
+        list_item_text.add("Train Arrival at station");
+        list_item_text.add("Cancelled Train");
         list_item_text.add("Station Name To Code");
         list_item_text.add("Station Code To Name");
         list_item_text.add("Station AutoComplete");
-        list_item_text.add("TrainPOJO AutoComplete");
+        list_item_text.add("Train AutoComplete");
 
         GridAdapter adapter = new GridAdapter(this, list_item_images, list_item_text);
 
