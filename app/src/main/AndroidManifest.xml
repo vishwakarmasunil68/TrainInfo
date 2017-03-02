@@ -30,7 +30,9 @@
         <activity android:name=".activity.TrainBetweenStationActivity" />
         <activity android:name=".activity.TrainNameNumberActivity" />
         <activity android:name=".activity.TrainFareEnquiryActivity" />
-        <activity android:name=".activity.TrainArrivalAtStationActivity"></activity>
+        <activity android:name=".activity.TrainArrivalAtStationActivity" />
+        <activity android:name=".activity.SeatAvailabilityResultAcitivity" />
+        <activity android:name=".activity.TrainBetweenStationListActivity"></activity>
     </application>
 
 </manifest>

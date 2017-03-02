@@ -2,18 +2,19 @@ package com.sundroid.traininfo.pojo.trainbetween;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class TrainBetweenStationPOJO {
+public class TrainBetweenStationPOJO implements Serializable {
     @SerializedName("response_code")
     String response_code;
     @SerializedName("error")
     String error;
-    @SerializedName("TrainPOJO")
+    @SerializedName("train")
     List<TrainPOJO> list_train_pojo;
     @SerializedName("total")
     String total;

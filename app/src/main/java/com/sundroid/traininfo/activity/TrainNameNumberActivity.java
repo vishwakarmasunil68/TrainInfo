@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
@@ -20,6 +21,7 @@ import com.sundroid.traininfo.webservices.WebServicesCallBack;
 import org.apache.http.NameValuePair;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,6 +34,10 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
     Toolbar toolbar;
     @BindView(R.id.et_train_name)
     EditText et_train_name;
+    @BindView(R.id.tv_train_name)
+    TextView tv_train_name;
+    @BindView(R.id.tv_running_days)
+    TextView tv_running_days;
     @BindView(R.id.btn_search)
     Button btn_search;
     @Override
@@ -98,6 +104,19 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
             try{
                 if(pojo.getResponse_code().equals("200")){
                     Log.d(TAG,"TrainPOJO route response:-"+pojo.toString());
+                    List<String> list_running_days=getListRunningDays(pojo.getTrain_pojo().getList_days_pojo());
+                    String string_running_days="";
+                    for(int j=0;j<list_running_days.size();j++){
+                        if((j+1)==list_running_days.size()){
+                            string_running_days+=list_running_days.get(j);
+                        }
+                        else{
+                            string_running_days+=list_running_days.get(j)+" , ";
+                        }
+                    }
+                    tv_running_days.setText(string_running_days);
+                    tv_train_name.setText(pojo.getTrain_pojo().getName()+"("+
+                    pojo.getTrain_pojo().getNumber()+")");
                 }else{
                     Toast.makeText(getApplicationContext(),"No Response",Toast.LENGTH_SHORT).show();
                 }
@@ -107,4 +126,57 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
             }
         }
     }
+
+    public List<String> getListRunningDays(List<com.sundroid.traininfo.pojo.trainnamenumber.DaysPOJO> list_days){
+        List<String> list_days_added=new ArrayList<>();
+        for(int i=0;i<list_days.size();i++){
+            com.sundroid.traininfo.pojo.trainnamenumber.DaysPOJO pojo=list_days.get(i);
+
+            if(pojo.getRuns().equals("Y")){
+                list_days_added.add(pojo.getDay_code());
+            }
+            else{
+
+            }
+        }
+        return list_days_added;
+    }
+
+    String train_name_number="{\n" +
+            "response_code: 200,\n" +
+            "train: {\n" +
+            "days: [\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"SUN\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"MON\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"TUE\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"WED\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"THU\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"FRI\"\n" +
+            "},\n" +
+            "{\n" +
+            "runs: \"Y\",\n" +
+            "day-code: \"SAT\"\n" +
+            "}\n" +
+            "],\n" +
+            "name: \"HWH MUMBAI MAIL\",\n" +
+            "number: \"12321\"\n" +
+            "}\n" +
+            "}";
 }

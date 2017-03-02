@@ -2,4 +2,38 @@
     <string name="app_name">Train Info</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+
+    <string-array name="class_code">
+        <item>Sleeper Class(SL)</item>
+        <item>First AC(1A)</item>
+        <item>Second AC(2A)</item>
+        <item>Third AC(3A)</item>
+        <item>AC Chair Car(CC)</item>
+        <item>First Class(FC)</item>
+        <item>Second Seating(2S)</item>
+        <item>3 AC Economy(3E)</item>
+    </string-array>
+
+    <string-array name="quota_code">
+        <item>General Quota(GN)</item>
+        <item>Reservation Against Cancellation(RC/(RAC))</item>
+        <item>Ladies Quota(LD)</item>
+        <item>Head Quarters/High Official Quota(HO)</item>
+        <item>Defence Quota(DF)</item>
+        <item>Parliament House Quota(PH)</item>
+        <item>Foreign Tourist Quota(FT)</item>
+        <item>Duty Pass Quota(DP)</item>
+        <item>Tatkal Quota(TQ)</item>
+        <item>Premium Tatkal Quota(PT)</item>
+        <item>Female(above 45 Year)/Senior Citizen/Travelling alone(SS)</item>
+        <item>Physically Handicapped Quota(HP)</item>
+        <item>Railway Employee Staff on Duty for the train(RE)</item>
+        <item>General Quota Road Side(GNRS)</item>
+        <item>Out Station(OS)</item>
+        <item>Pooled Quota(PQ)</item>
+        <item>Road Side(RS)</item>
+        <item>Yuva(YU)</item>
+        <item>Lower Berth(LB)</item>
+    </string-array>
 </resources>

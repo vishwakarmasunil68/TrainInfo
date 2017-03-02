@@ -2,16 +2,17 @@ package com.sundroid.traininfo.pojo.trainbetween;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class TrainPOJO {
+public class TrainPOJO implements Serializable {
     @SerializedName("classes")
     List<ClassesPOJO> list_classes;
-    @SerializedName("DaysPOJO")
+    @SerializedName("days")
     List<DaysPOJO> list_days;
     @SerializedName("number")
     String number;
@@ -26,7 +27,10 @@ public class TrainPOJO {
     @SerializedName("travel_time")
     String travel_time;
     @SerializedName("from")
-    FromPOJO from;
+    FromPOJO fromPOJO;
+    @SerializedName("to")
+    ToPOJO toPOJO;
+
 
     public List<ClassesPOJO> getList_classes() {
         return list_classes;
@@ -92,12 +96,20 @@ public class TrainPOJO {
         this.travel_time = travel_time;
     }
 
-    public FromPOJO getFrom() {
-        return from;
+    public FromPOJO getFromPOJO() {
+        return fromPOJO;
     }
 
-    public void setFrom(FromPOJO from) {
-        this.from = from;
+    public void setFromPOJO(FromPOJO fromPOJO) {
+        this.fromPOJO = fromPOJO;
+    }
+
+    public ToPOJO getToPOJO() {
+        return toPOJO;
+    }
+
+    public void setToPOJO(ToPOJO toPOJO) {
+        this.toPOJO = toPOJO;
     }
 
     @Override
@@ -111,7 +123,8 @@ public class TrainPOJO {
                 ", name='" + name + '\'' +
                 ", src_departure_time='" + src_departure_time + '\'' +
                 ", travel_time='" + travel_time + '\'' +
-                ", from=" + from +
+                ", fromPOJO=" + fromPOJO +
+                ", toPOJO=" + toPOJO +
                 '}';
     }
 }

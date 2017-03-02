@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.sundroid.traininfo.activity.TrainNameNumberActivity">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -13,18 +14,56 @@
         android:layout_gravity="center"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:minHeight="?attr/actionBarSize">
-    </android.support.v7.widget.Toolbar>
+        android:minHeight="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
+
     <EditText
         android:id="@+id/et_train_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="train no"/>
+        android:hint="train no" />
 
     <Button
         android:id="@+id/btn_search"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"/>
+        android:text="Search" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tv_train_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="train_name_number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Running days:-"/>
+
+            <TextView
+                android:id="@+id/tv_running_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

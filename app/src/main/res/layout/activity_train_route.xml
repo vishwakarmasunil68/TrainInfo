@@ -7,6 +7,93 @@
     android:orientation="vertical"
     tools:context="com.sundroid.traininfo.activity.TrainRouteActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="9dp"
+                    android:padding="5dp">
+
+                    <EditText
+                        android:id="@+id/et_train_route"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Train Route" />
+
+                    <ImageView
+                        android:id="@+id/iv_clear_et"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="right|center_vertical"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/ic_close" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_click"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Search" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Class"/>
+
+                <TextView
+                    android:id="@+id/tv_class"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <include
+                layout="@layout/layout_classes"
+                />
+            <include
+                layout="@layout/layout_days"
+                />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -14,31 +101,6 @@
         android:layout_gravity="center"
         android:background="@color/colorPrimary"
         android:gravity="center"
-        android:minHeight="?attr/actionBarSize">
-    </android.support.v7.widget.Toolbar>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <EditText
-            android:id="@+id/et_train_route"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Train Route"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:gravity="center">
-        <Button
-            android:id="@+id/btn_click"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:hint="Click"/>
-    </LinearLayout>
+        android:minHeight="?attr/actionBarSize"></android.support.v7.widget.Toolbar>
 
 </LinearLayout>

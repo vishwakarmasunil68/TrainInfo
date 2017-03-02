@@ -2,11 +2,13 @@ package com.sundroid.traininfo.pojo.trainbetween;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class ClassesPOJO {
+public class ClassesPOJO implements Serializable{
     @SerializedName("class-code")
     String class_code;
     @SerializedName("available")
