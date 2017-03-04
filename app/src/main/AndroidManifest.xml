@@ -32,7 +32,8 @@
         <activity android:name=".activity.TrainFareEnquiryActivity" />
         <activity android:name=".activity.TrainArrivalAtStationActivity" />
         <activity android:name=".activity.SeatAvailabilityResultAcitivity" />
-        <activity android:name=".activity.TrainBetweenStationListActivity"></activity>
+        <activity android:name=".activity.TrainBetweenStationListActivity" />
+        <activity android:name=".activity.CancelledTrainActivity"></activity>
     </application>
 
 </manifest>

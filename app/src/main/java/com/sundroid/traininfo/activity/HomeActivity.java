@@ -127,8 +127,10 @@ public class HomeActivity extends AppCompatActivity {
 
                 break;
             case 7:
+                startActivity(new Intent(HomeActivity.this,TrainArrivalAtStationActivity.class));
                 break;
             case 8:
+                startActivity(new Intent(HomeActivity.this,CancelledTrainActivity.class));
                 break;
             case 9:
                 break;
