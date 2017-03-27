@@ -5,7 +5,8 @@ package com.sundroid.traininfo.Utils;
  */
 
 public class WebUrls {
-    private final static String API_KEY="cq3tv2wm";
+//    private final static String API_KEY="cq3tv2wm";
+    private final static String API_KEY="7pbcjisr";
     public final static String BASE_URL="http://api.railwayapi.com";
 
     public static String getLiveTrainURL(String train_number,String date){

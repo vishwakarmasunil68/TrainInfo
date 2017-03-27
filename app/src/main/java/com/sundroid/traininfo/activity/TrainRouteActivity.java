@@ -1,14 +1,18 @@
 package com.sundroid.traininfo.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +22,7 @@ import com.sundroid.traininfo.Utils.StringUtils;
 import com.sundroid.traininfo.Utils.WebUrls;
 import com.sundroid.traininfo.pojo.trainroute.ClassesPOJO;
 import com.sundroid.traininfo.pojo.trainroute.DaysPOJO;
+import com.sundroid.traininfo.pojo.trainroute.RoutePOJO;
 import com.sundroid.traininfo.pojo.trainroute.TrainRoutePOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
@@ -34,8 +39,6 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
     private final static String TRAIN_ROUTE_API_CALL = "pnr_call_api";
     private final String TAG = getClass().getSimpleName();
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
     @BindView(R.id.btn_click)
     Button btn_click;
     @BindView(R.id.et_train_route)
@@ -72,6 +75,15 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
     ImageView iv_2a;
     @BindView(R.id.iv_3e)
     ImageView iv_3e;
+    @BindView(R.id.ll_route)
+    LinearLayout ll_route;
+    @BindView(R.id.tv_train_name)
+    TextView tv_train_name;
+    @BindView(R.id.iv_map)
+    ImageView iv_map;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
 
 
     @Override
@@ -132,20 +144,58 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
 
     public void parseTrainRouteResponse(String response) {
         Gson gson = new Gson();
-        TrainRoutePOJO pojo = gson.fromJson(response, TrainRoutePOJO.class);
+        final TrainRoutePOJO pojo = gson.fromJson(response, TrainRoutePOJO.class);
         if (pojo != null) {
             try {
                 if (pojo.getResponse_code().equals("200")) {
                     Log.d(TAG, "TrainPOJO route response:-" + pojo.toString());
                     getTrainClassStatus(pojo.getTrain_pojo().getList_classes());
                     getDayStatus(pojo.getTrain_pojo().getList_days());
+                    showRoute(pojo.getList_route_pojo());
 
+                    tv_train_name.setText(pojo.getTrain_pojo().getName()+"("+pojo.getTrain_pojo().getNumber()+")");
+
+                    iv_map.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent=new Intent(TrainRouteActivity.this,MapTrainActivity.class);
+                            intent.putExtra("trainroute",pojo);
+                            startActivity(intent);
+                        }
+                    });
                 } else {
                     Toast.makeText(getApplicationContext(), "No Response", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Log.d(TAG, "error:-" + e.toString());
+//                Log.d(TAG, "error:-" + e.toString());
+                e.printStackTrace();
             }
+        }
+    }
+    public void showRoute(List<RoutePOJO> list_route_pojo){
+        for (int i = 0; i < list_route_pojo.size(); i++) {
+            RoutePOJO routePOJO=list_route_pojo.get(i);
+            final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.inflate_train_route, null);
+            TextView tv_station_info= (TextView) view.findViewById(R.id.tv_station_info);
+            TextView tv_sch_arr= (TextView) view.findViewById(R.id.tv_sch_arr);
+            TextView tv_sch_dep= (TextView) view.findViewById(R.id.tv_sch_dep);
+            TextView tv_distance= (TextView) view.findViewById(R.id.tv_distance);
+            TextView tv_state= (TextView) view.findViewById(R.id.tv_state);
+            TextView tv_day= (TextView) view.findViewById(R.id.tv_day);
+            LinearLayout ll_route_child= (LinearLayout) view.findViewById(R.id.ll_route_child);
+
+            tv_station_info.setText("Station : "+routePOJO.getFullname()+"("+routePOJO.getCode()+")");
+            tv_sch_arr.setText("Sch Arr : "+routePOJO.getScharr());
+            tv_sch_dep.setText("Sch Dep : "+routePOJO.getSchdep());
+
+            tv_distance.setText("Distance : "+routePOJO.getDistance());
+            tv_state.setText("\tState : "+routePOJO.getState());
+
+            tv_day.setText("Day : "+routePOJO.getDay());
+
+
+            ll_route.addView(view);
         }
     }
 

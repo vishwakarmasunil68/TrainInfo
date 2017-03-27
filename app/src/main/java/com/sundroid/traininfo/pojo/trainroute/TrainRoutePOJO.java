@@ -2,16 +2,17 @@ package com.sundroid.traininfo.pojo.trainroute;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class TrainRoutePOJO {
+public class TrainRoutePOJO implements Serializable{
     @SerializedName("response_code")
     String response_code;
-    @SerializedName("TrainPOJO")
+    @SerializedName("train")
     TrainPOJO train_pojo;
     @SerializedName("route")
     List<RoutePOJO> list_route_pojo;

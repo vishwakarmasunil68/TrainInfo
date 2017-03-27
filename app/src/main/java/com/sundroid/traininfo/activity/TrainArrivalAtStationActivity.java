@@ -2,12 +2,17 @@ package com.sundroid.traininfo.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,7 +21,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
+import com.sundroid.traininfo.Utils.ToastClass;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.database.DBHelper;
+import com.sundroid.traininfo.pojo.autocompletestation.AutoCompleteStationPOJO;
+import com.sundroid.traininfo.pojo.autocompletestation.StationAutocompletePOJO;
 import com.sundroid.traininfo.pojo.trainarrivalatstation.TrainArrivalPOJO;
 import com.sundroid.traininfo.pojo.trainarrivalatstation.TrainPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
@@ -25,6 +34,11 @@ import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.apache.http.NameValuePair;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,30 +50,76 @@ import static com.sundroid.traininfo.R.id.tv_date;
 public class TrainArrivalAtStationActivity extends AppCompatActivity implements View.OnClickListener, WebServicesCallBack, TimePickerDialog.OnTimeSetListener{
 
     private final static String TRAIN_ARRIVAL_API="train_arrival_api";
+    private final static String STATION_AUTO_COMPLETE="station_autocomplete";
     private final String TAG=getClass().getSimpleName();
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.et_station_code)
-    EditText et_station_code;
+    AutoCompleteTextView et_station_code;
     @BindView(R.id.et_hour)
     EditText et_hour;
     @BindView(R.id.btn_search)
     Button btn_search;
     @BindView(R.id.ll_scroll)
     LinearLayout ll_scroll;
-
+    DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_train_arrival_at_station);
         ButterKnife.bind(this);
 
+        dbHelper=new DBHelper(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         btn_search.setOnClickListener(this);
+
+        et_station_code.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_station_code.getText().toString().length()==1) {
+                    callAutoStationCompleteAPI();
+                }
+            }
+        });
+
+
+        copydatabase();
+    }
+
+    public void callAutoStationCompleteAPI(){
+//        List<StationAutocompletePOJO> list=dbHelper.getAllStation();
+//
+//
+//        Collections.sort(list, new Comparator<StationAutocompletePOJO>() {
+//
+//            public int compare(StationAutocompletePOJO o1, StationAutocompletePOJO o2) {
+//                return o1.getFullname().compareTo(o2.getFullname());
+//            }
+//        });
+//
+//        dbHelper.deleteAllStations();
+//
+//        for(StationAutocompletePOJO station:list){
+//            dbHelper.insertstation(station);
+//        }
+        String url = WebUrls.getStationAutoCompleteSuggestURL(et_station_code.getText().toString());
+        Log.d(TAG,"url:-"+url);
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        new WebServiceBase(nameValuePairs, this, STATION_AUTO_COMPLETE,false).execute(url);
     }
 
 
@@ -78,11 +138,12 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
 
     public void callTrainAPI() {
         if (et_station_code.getText().toString().length() > 0 && et_hour.getText().toString().length() > 0) {
-            String url = WebUrls.getTrainArrivalsURL(et_station_code.getText().toString(),
-                    et_hour.getText().toString() );
-            Log.d(TAG, "url:-" + url);
-            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-            new WebServiceBase(nameValuePairs, this, TRAIN_ARRIVAL_API).execute(url);
+            Log.d(TAG,"tex:-"+list_of_stations_string.indexOf(et_station_code.getText().toString()));
+//            String url = WebUrls.getTrainArrivalsURL(et_station_code.getText().toString(),
+//                    et_hour.getText().toString() );
+//            Log.d(TAG, "url:-" + url);
+//            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+//            new WebServiceBase(nameValuePairs, this, TRAIN_ARRIVAL_API).execute(url);
         } else {
             Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
         }
@@ -107,7 +168,45 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
             case TRAIN_ARRIVAL_API:
                 parseTrainFairResponse(response);
                 break;
+            case STATION_AUTO_COMPLETE:
+                parseStationAutocomplete(response);
+                break;
         }
+    }
+    List<String> list_of_stations_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_of_stations=new ArrayList<>();
+    public void parseStationAutocomplete(String response){
+        Log.d(TAG,"station autocomplete:-"+response);
+        try{
+
+            Gson gson=new Gson();
+            AutoCompleteStationPOJO autoCompleteStationPOJO=gson.fromJson(response,AutoCompleteStationPOJO.class);
+            if(autoCompleteStationPOJO.getResponse_code()==200){
+                list_of_stations_string.clear();
+                list_of_stations.clear();
+                List<StationAutocompletePOJO> stationAutocompletePOJOList=autoCompleteStationPOJO.getStationAutocompletePOJOList();
+                list_of_stations.addAll(stationAutocompletePOJOList);
+                for(StationAutocompletePOJO stationAutocompletePOJO:stationAutocompletePOJOList){
+                    list_of_stations_string.add(stationAutocompletePOJO.getStation());
+//                    StationAutocompletePOJO stationAutocompletePOJO1=dbHelper.getStationbyStationName(stationAutocompletePOJO.getFullname(),stationAutocompletePOJO.getCode());
+//                    if(stationAutocompletePOJO1!=null&&stationAutocompletePOJO1.getFullname().equals(stationAutocompletePOJO.getFullname())){
+//
+//                    }else{
+//                        dbHelper.insertstation(stationAutocompletePOJO);
+//                    }
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_of_stations_string);
+                et_station_code.setAdapter(adapter);
+            }
+            else{
+                ToastClass.showLongToast(getApplicationContext(),"Server is temporary down");
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        Toast.makeText(getApplicationContext(),"done",Toast.LENGTH_LONG).show();
+
     }
     public void parseTrainFairResponse(String response){
         Log.d(TAG,"response:-"+response);
@@ -157,5 +256,26 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
 //        tv_hour.setText(hourOfDay+":"+minute+":"+second);
+    }
+
+    public void copydatabase(){
+        File sd = Environment.getExternalStorageDirectory();
+        File data = Environment.getDataDirectory();
+        FileChannel source=null;
+        FileChannel destination=null;
+        String currentDBPath = "/data/"+ "com.sundroid.traininfo" +"/databases/"+"traindb";
+        String backupDBPath = "traindb";
+        File currentDB = new File(data, currentDBPath);
+        File backupDB = new File(sd, backupDBPath);
+        try {
+            source = new FileInputStream(currentDB).getChannel();
+            destination = new FileOutputStream(backupDB).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+            Toast.makeText(this, "DB Exported!", Toast.LENGTH_LONG).show();
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -40,6 +40,7 @@ public class WebServiceBase extends AsyncTask<String,Void,String> {
     ProgressDialog progressDialog;
     String msg;
     private final String TAG=getClass().getName();
+    private boolean isdialog=true;
     @Override
     public String toString() {
         return "WebServiceBase{" +
@@ -58,6 +59,13 @@ public class WebServiceBase extends AsyncTask<String,Void,String> {
         this.msg=msg;
         Log.d(TAG,this.toString());
     }
+    public WebServiceBase(ArrayList<NameValuePair> nameValuePairs, Activity activity, String msg,boolean isdialog){
+        this.nameValuePairs=nameValuePairs;
+        this.activity=activity;
+        this.msg=msg;
+        this.isdialog=isdialog;
+        Log.d(TAG,this.toString());
+    }
     public WebServiceBase(ArrayList<NameValuePair> nameValuePairs, Activity activity, Fragment fragment, String msg){
         this.nameValuePairs=nameValuePairs;
         this.activity=activity;
@@ -69,10 +77,12 @@ public class WebServiceBase extends AsyncTask<String,Void,String> {
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setMessage("Please Wait...");
-        progressDialog.setCancelable(false);
-        progressDialog.show();
+        if(isdialog) {
+            progressDialog = new ProgressDialog(activity);
+            progressDialog.setMessage("Please Wait...");
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
     }
 
     @Override

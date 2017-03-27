@@ -57,7 +57,16 @@ public class HomeActivity extends AppCompatActivity {
         setUpLeftNavigationDrawer();
 
         setUpGridContent();
+//        Log.d(TAG,"resp:-"+resp);
+//        try{
+//            Gson gson=new Gson();
+//            TrainAutocompletePOJO pojo=gson.fromJson(resp,TrainAutocompletePOJO.class);
+//            Log.d(TAG,"train_autocomplete:-"+pojo.toString());
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
+    private final String TAG=getClass().getSimpleName();
     public void setUpGridContent(){
         list_item_images.add(R.drawable.ic_launcher);
         list_item_images.add(R.drawable.ic_launcher);
@@ -271,5 +280,304 @@ public class HomeActivity extends AppCompatActivity {
             return grid;
         }
     }
+
+    String resp="{\n" +
+            "  \"response_code\": 200,\n" +
+            "  \"trains\": [\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANJANGA EX\",\n" +
+            "      \"number\": \"25657\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANJUNGA EX\",\n" +
+            "      \"number\": \"25658\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAJ KIR PASSENGER\",\n" +
+            "      \"number\": \"55728\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAP LKO PASSENGER\",\n" +
+            "      \"number\": \"64214\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAP LKO PASSENGER\",\n" +
+            "      \"number\": \"64216\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAWR PERN PASSENGER\",\n" +
+            "      \"number\": \"70102\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAWR PERN PASSENGER\",\n" +
+            "      \"number\": \"70104\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAMAYANI EXPRES\",\n" +
+            "      \"number\": \"11071\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAMAYANI EXPRES\",\n" +
+            "      \"number\": \"11072\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAIFIYAT EXP\",\n" +
+            "      \"number\": \"12225\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAIFIYAT EXP\",\n" +
+            "      \"number\": \"12226\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA MAIL\",\n" +
+            "      \"number\": \"12312\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARNATAKA EXP\",\n" +
+            "      \"number\": \"12627\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARNATAKA EXP\",\n" +
+            "      \"number\": \"12628\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANYAKUMARI EXP\",\n" +
+            "      \"number\": \"12633\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANYAKUMARI EXP\",\n" +
+            "      \"number\": \"12634\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANNYAKUMARI EX\",\n" +
+            "      \"number\": \"12665\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KACHEGUDA EXP\",\n" +
+            "      \"number\": \"12786\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARNAVATI EXP\",\n" +
+            "      \"number\": \"12933\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARNAVATI EXP\",\n" +
+            "      \"number\": \"12934\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVIGURU EXPRES\",\n" +
+            "      \"number\": \"12949\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVI GURU EXP\",\n" +
+            "      \"number\": \"13027\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVI GURU EXP\",\n" +
+            "      \"number\": \"13028\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANKANYA EX\",\n" +
+            "      \"number\": \"13149\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANKANYA EX\",\n" +
+            "      \"number\": \"13150\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KASHI V EXPRESS\",\n" +
+            "      \"number\": \"14258\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALINDI EXPRESS\",\n" +
+            "      \"number\": \"14723\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALINDI EXPRESS\",\n" +
+            "      \"number\": \"14724\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANJANGA EX\",\n" +
+            "      \"number\": \"15657\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANCHANJUNGA EX\",\n" +
+            "      \"number\": \"15658\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAMAKHYA EXPRES\",\n" +
+            "      \"number\": \"15667\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAMRUP EXPRESS\",\n" +
+            "      \"number\": \"15959\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAMRUP EXPRESS\",\n" +
+            "      \"number\": \"15960\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVERI  EXPRESS\",\n" +
+            "      \"number\": \"16021\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVERI EXPRESS\",\n" +
+            "      \"number\": \"16022\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARAIKAL EXP\",\n" +
+            "      \"number\": \"16175\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KACHEGUDA EXP\",\n" +
+            "      \"number\": \"16354\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANYAKUMARI EXP\",\n" +
+            "      \"number\": \"16381\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAWR YPR EXPRES\",\n" +
+            "      \"number\": \"16516\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANNUR  EXP\",\n" +
+            "      \"number\": \"16517\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARWAR  EXP\",\n" +
+            "      \"number\": \"16523\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANYAKUMARI EXP\",\n" +
+            "      \"number\": \"16526\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAGHAZNAGAR EXP\",\n" +
+            "      \"number\": \"17035\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAGHAZNAGAR EXP\",\n" +
+            "      \"number\": \"17036\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KACHEGUDA EXP\",\n" +
+            "      \"number\": \"17604\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KACHEGUDA EXP\",\n" +
+            "      \"number\": \"17616\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KACHEGUDA  EXP\",\n" +
+            "      \"number\": \"17651\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANDARI EXPRESS\",\n" +
+            "      \"number\": \"18001\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KANDARI EXPRESS\",\n" +
+            "      \"number\": \"18002\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALINGAUTKALEXP\",\n" +
+            "      \"number\": \"18478\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KAVI GURU EXP\",\n" +
+            "      \"number\": \"19709\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARMABHOOMI EXP\",\n" +
+            "      \"number\": \"22511\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KARMABHOOMI EXP\",\n" +
+            "      \"number\": \"22512\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA SIMLA EXP\",\n" +
+            "      \"number\": \"52453\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA SHTBDI\",\n" +
+            "      \"number\": \"12005\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA SHTBDI\",\n" +
+            "      \"number\": \"12006\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA SHTBDI\",\n" +
+            "      \"number\": \"12011\"\n" +
+            "    },\n" +
+            "    {\n" +
+            "      \"name\": \"KALKA SHTBDI\",\n" +
+            "      \"number\": \"12012\"\n" +
+            "    }\n" +
+            "  ],\n" +
+            "  \"total\": 58,\n" +
+            "  \"train\": [\n" +
+            "    \"KANCHANJANGA EX (25657)\",\n" +
+            "    \"KANCHANJUNGA EX (25658)\",\n" +
+            "    \"KAJ KIR PASSENGER (55728)\",\n" +
+            "    \"KAP LKO PASSENGER (64214)\",\n" +
+            "    \"KAP LKO PASSENGER (64216)\",\n" +
+            "    \"KAWR PERN PASSENGER (70102)\",\n" +
+            "    \"KAWR PERN PASSENGER (70104)\",\n" +
+            "    \"KAMAYANI EXPRES (11071)\",\n" +
+            "    \"KAMAYANI EXPRES (11072)\",\n" +
+            "    \"KAIFIYAT EXP (12225)\",\n" +
+            "    \"KAIFIYAT EXP (12226)\",\n" +
+            "    \"KALKA MAIL (12312)\",\n" +
+            "    \"KARNATAKA EXP (12627)\",\n" +
+            "    \"KARNATAKA EXP (12628)\",\n" +
+            "    \"KANYAKUMARI EXP (12633)\",\n" +
+            "    \"KANYAKUMARI EXP (12634)\",\n" +
+            "    \"KANNYAKUMARI EX (12665)\",\n" +
+            "    \"KACHEGUDA EXP (12786)\",\n" +
+            "    \"KARNAVATI EXP (12933)\",\n" +
+            "    \"KARNAVATI EXP (12934)\",\n" +
+            "    \"KAVIGURU EXPRES (12949)\",\n" +
+            "    \"KAVI GURU EXP (13027)\",\n" +
+            "    \"KAVI GURU EXP (13028)\",\n" +
+            "    \"KANCHANKANYA EX (13149)\",\n" +
+            "    \"KANCHANKANYA EX (13150)\",\n" +
+            "    \"KASHI V EXPRESS (14258)\",\n" +
+            "    \"KALINDI EXPRESS (14723)\",\n" +
+            "    \"KALINDI EXPRESS (14724)\",\n" +
+            "    \"KANCHANJANGA EX (15657)\",\n" +
+            "    \"KANCHANJUNGA EX (15658)\",\n" +
+            "    \"KAMAKHYA EXPRES (15667)\",\n" +
+            "    \"KAMRUP EXPRESS (15959)\",\n" +
+            "    \"KAMRUP EXPRESS (15960)\",\n" +
+            "    \"KAVERI  EXPRESS (16021)\",\n" +
+            "    \"KAVERI EXPRESS (16022)\",\n" +
+            "    \"KARAIKAL EXP (16175)\",\n" +
+            "    \"KACHEGUDA EXP (16354)\",\n" +
+            "    \"KANYAKUMARI EXP (16381)\",\n" +
+            "    \"KAWR YPR EXPRES (16516)\",\n" +
+            "    \"KANNUR  EXP (16517)\",\n" +
+            "    \"KARWAR  EXP (16523)\",\n" +
+            "    \"KANYAKUMARI EXP (16526)\",\n" +
+            "    \"KAGHAZNAGAR EXP (17035)\",\n" +
+            "    \"KAGHAZNAGAR EXP (17036)\",\n" +
+            "    \"KACHEGUDA EXP (17604)\",\n" +
+            "    \"KACHEGUDA EXP (17616)\",\n" +
+            "    \"KACHEGUDA  EXP (17651)\",\n" +
+            "    \"KANDARI EXPRESS (18001)\",\n" +
+            "    \"KANDARI EXPRESS (18002)\",\n" +
+            "    \"KALINGAUTKALEXP (18478)\",\n" +
+            "    \"KAVI GURU EXP (19709)\",\n" +
+            "    \"KARMABHOOMI EXP (22511)\",\n" +
+            "    \"KARMABHOOMI EXP (22512)\",\n" +
+            "    \"KALKA SIMLA EXP (52453)\",\n" +
+            "    \"KALKA SHTBDI (12005)\",\n" +
+            "    \"KALKA SHTBDI (12006)\",\n" +
+            "    \"KALKA SHTBDI (12011)\",\n" +
+            "    \"KALKA SHTBDI (12012)\"\n" +
+            "  ]\n" +
+            "}";
 
 }

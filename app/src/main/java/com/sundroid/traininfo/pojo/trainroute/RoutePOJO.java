@@ -2,11 +2,13 @@ package com.sundroid.traininfo.pojo.trainroute;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by sunil on 16-02-2017.
  */
 
-public class RoutePOJO {
+public class RoutePOJO implements Serializable {
     @SerializedName("schdep")
     String schdep;
     @SerializedName("scharr")

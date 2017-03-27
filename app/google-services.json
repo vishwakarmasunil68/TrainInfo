@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "590259627023",
+    "firebase_url": "https://traininfo-7134b.firebaseio.com",
+    "project_id": "traininfo-7134b",
+    "storage_bucket": "traininfo-7134b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:590259627023:android:35a4dbc7fa95f63f",
+        "android_client_info": {
+          "package_name": "com.sundroid.traininfo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "590259627023-26uho4iup3mmrgf7m43a9l6kga435jft.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sundroid.traininfo",
+            "certificate_hash": "04f2d0dcda2399dcfe9b86f0e498ff2aa18a1c00"
+          }
+        },
+        {
+          "client_id": "590259627023-kbqh0gurc06hs5tkn5vr0ckl5e6m8bbt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfXZdIJB92bK7pHXKEU4b8LKyd3BZ2UMU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "590259627023-kbqh0gurc06hs5tkn5vr0ckl5e6m8bbt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

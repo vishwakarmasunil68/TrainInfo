@@ -22,6 +22,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDptKOXD7QTwtBqcRRKm5d2SFaDCDHO-0Q" />
         <activity android:name=".activity.LiveTrainStatusActivity" />
         <activity android:name=".activity.HomeActivity" />
         <activity android:name=".activity.PNRStatusActivity" />
@@ -33,7 +37,10 @@
         <activity android:name=".activity.TrainArrivalAtStationActivity" />
         <activity android:name=".activity.SeatAvailabilityResultAcitivity" />
         <activity android:name=".activity.TrainBetweenStationListActivity" />
-        <activity android:name=".activity.CancelledTrainActivity"></activity>
+        <activity android:name=".activity.CancelledTrainActivity" />
+        <!-- <activity android:name=".test.TestActivity"></activity> -->
+        <activity android:name=".activity.LiveTrainStationInfoActivity" />
+        <activity android:name=".activity.MapTrainActivity"></activity>
     </application>
 
 </manifest>
