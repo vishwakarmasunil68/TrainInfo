@@ -6,14 +6,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.database.GetData;
+import com.sundroid.traininfo.pojo.trainautocomplete.TrainAutoResultPOJO;
 import com.sundroid.traininfo.pojo.trainnamenumber.TrainNameNumberPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
@@ -33,13 +36,14 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.et_train_name)
-    EditText et_train_name;
+    AutoCompleteTextView et_train_name;
     @BindView(R.id.tv_train_name)
     TextView tv_train_name;
     @BindView(R.id.tv_running_days)
     TextView tv_running_days;
     @BindView(R.id.btn_search)
     Button btn_search;
+    GetData getData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +53,8 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        getData=new GetData(this);
 
         btn_search.setOnClickListener(this);
     }
@@ -76,7 +82,8 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
 
     public void callTrainAPI(){
         if(et_train_name.getText().toString().length()>0){
-            String url = WebUrls.getTrainNameNumberURL(et_train_name.getText().toString());
+            String train_name=getTrainNumber();
+            String url = WebUrls.getTrainNameNumberURL(train_name);
             Log.d(TAG,"url:-"+url);
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             new WebServiceBase(nameValuePairs, this, TRAIN_NAME_NUMBER).execute(url);
@@ -125,6 +132,32 @@ public class TrainNameNumberActivity extends AppCompatActivity implements View.O
                 Log.d(TAG,"error:-"+e.toString());
             }
         }
+    }
+    public String getTrainNumber(){
+        String train_no=et_train_name.getText().toString();
+        try {
+            if (list_trains_string.contains(et_train_name.getText().toString())) {
+                int index = list_trains_string.indexOf(et_train_name.getText().toString());
+                train_no=list_trains.get(index).getNumber();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return train_no;
+    }
+
+    List<String> list_trains_string=new ArrayList<>();
+    List<TrainAutoResultPOJO> list_trains;
+    public void getTrainList(){
+        list_trains=getData.getTrainList(et_train_name.getText().toString());
+        list_trains_string.clear();
+        for(TrainAutoResultPOJO trainAutoResultPOJO:list_trains){
+            list_trains_string.add(trainAutoResultPOJO.getFullName());
+        }
+        Log.d(TAG,list_trains_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_trains_string);
+        et_train_name.setAdapter(adapter);
     }
 
     public List<String> getListRunningDays(List<com.sundroid.traininfo.pojo.trainnamenumber.DaysPOJO> list_days){

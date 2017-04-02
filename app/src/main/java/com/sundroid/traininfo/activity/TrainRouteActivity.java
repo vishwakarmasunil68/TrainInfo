@@ -96,6 +96,13 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Bundle bundle=getIntent().getExtras();
+        if(bundle!=null){
+            String trainNo=bundle.getString("trainno");
+            callAPI(trainNo);
+            et_train_route.setText(trainNo);
+        }
+
         btn_click.setOnClickListener(this);
     }
 
@@ -114,20 +121,21 @@ public class TrainRouteActivity extends AppCompatActivity implements View.OnClic
         int id = view.getId();
         switch (id) {
             case R.id.btn_click:
-                callAPI();
+                if (et_train_route.getText().toString().length() > 0) {
+                    callAPI(et_train_route.getText().toString());
+                }
+                else {
+                    Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
+                }
                 break;
         }
     }
 
-    public void callAPI() {
-        if (et_train_route.getText().toString().length() > 0) {
-            String url = WebUrls.getTrainRouteStatusURL(et_train_route.getText().toString());
+    public void callAPI(String trainNo) {
+            String url = WebUrls.getTrainRouteStatusURL(trainNo);
             Log.d(TAG, "url:-" + url);
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             new WebServiceBase(nameValuePairs, this, TRAIN_ROUTE_API_CALL).execute(url);
-        } else {
-            Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
-        }
     }
 
     @Override

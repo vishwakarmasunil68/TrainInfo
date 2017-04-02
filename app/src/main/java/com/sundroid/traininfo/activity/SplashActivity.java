@@ -14,6 +14,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.sundroid.traininfo.R;
+import com.sundroid.traininfo.database.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -152,10 +153,23 @@ public class SplashActivity extends AppCompatActivity {
 
             @Override
             public void run() {
+                createDataBase();
                 Intent i=new Intent(SplashActivity.this,HomeActivity.class);
                 startActivity(i);
                 finish();
             }
         }, SPLASH_TIME_OUT);
+    }
+
+    public void createDataBase() {
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        try {
+            DatabaseHelper.closedatabase();
+            dbHelper.createDataBase();
+            //DatabaseHelper.openDataBase();
+        } catch (Exception e) {
+            Log.e("Database Error MSG", e + "");
+        }
     }
 }

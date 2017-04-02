@@ -1,12 +1,17 @@
 package com.sundroid.traininfo.activity;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,7 +20,11 @@ import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.StringUtils;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.database.GetData;
+import com.sundroid.traininfo.pojo.autocompletestation.StationAutocompletePOJO;
+import com.sundroid.traininfo.pojo.seatavailability.AvailabilityPOJO;
 import com.sundroid.traininfo.pojo.seatavailability.SeatAvailabilityPOJO;
+import com.sundroid.traininfo.pojo.trainautocomplete.TrainAutoResultPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -26,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,11 +47,11 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
     private final static String SEAT_AVAILABILITY_API="seat_availability_api";
 
     @BindView(R.id.et_train_no)
-    EditText et_train_no;
+    AutoCompleteTextView et_train_no;
     @BindView(R.id.et_source_code)
-    EditText et_source_code;
+    AutoCompleteTextView et_source_code;
     @BindView(R.id.et_destination)
-    EditText et_destination;
+    AutoCompleteTextView et_destination;
     @BindView(R.id.tv_date)
     TextView tv_date;
     @BindView(R.id.spinner_quota)
@@ -50,12 +60,27 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
     Spinner spinner_seat;
     @BindView(R.id.btn_search)
     Button btn_search;
-
+    @BindView(R.id.tv_train_name)
+    TextView tv_train_name;
+    @BindView(R.id.tv_from_to)
+    TextView tv_from_to;
+    @BindView(R.id.tv_class)
+    TextView tv_class;
+    @BindView(R.id.tv_date_train)
+    TextView tv_date_train;
+    @BindView(R.id.ll_availability_scroll)
+    LinearLayout ll_availability_scroll;
+    @BindView(R.id.ll_result)
+    LinearLayout ll_result;
+    GetData getData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seat_availability);
         ButterKnife.bind(this);
+
+        getData=new GetData(this);
+
         tv_date.setOnClickListener(this);
         btn_search.setOnClickListener(this);
 
@@ -63,6 +88,7 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         SimpleDateFormat sdf=new SimpleDateFormat("dd-MM-yyyy");
         tv_date.setText(sdf.format(d));
 
+        addTextWatchers();
     }
 
     @Override
@@ -70,8 +96,8 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         int id=view.getId();
         switch (id){
             case R.id.btn_search:
-//                callseatAvailabilityAPI();
-                parseSeatAvailabilityAPI(apiresponse);
+                callseatAvailabilityAPI();
+//                parseSeatAvailabilityAPI(apiresponse);
                 break;
             case R.id.tv_date:
                 OpenCalendar();
@@ -89,7 +115,6 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         dpd.show(getFragmentManager(), "Datepickerdialog");
     }
     public void callseatAvailabilityAPI(){
-        String train_no=et_train_no.getText().toString();
         String source_station=et_source_code.getText().toString();
         String destination_station=et_destination.getText().toString();
         String date=tv_date.getText().toString();
@@ -100,10 +125,14 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         if (et_source_code.getText().toString().length() > 0 && et_destination.getText().toString().length() > 0
                 && et_train_no.getText().toString().length() > 0 && tv_date.getText().toString().length() > 0 &&
                 spinner_quota.getSelectedItem().toString().length() > 0 && spinner_seat.getSelectedItem().toString().length() > 0) {
+
+            String train_no=getTrainNumber();
+            String source_code=getSourceStationCode();
+            String dest_code=getDestinationStationCode();
             String url = WebUrls.getSeatAvailabilityURL(
                     train_no,
-                    source_station,
-                    destination_station,
+                    source_code,
+                    dest_code,
                     date,
                     seat_class_code,
                     quota_code);
@@ -113,6 +142,47 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         } else {
             Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
         }
+    }
+    public String getTrainNumber(){
+        String train_no=et_train_no.getText().toString();
+        try {
+            if (list_trains_string.contains(et_train_no.getText().toString())) {
+                int index = list_trains_string.indexOf(et_train_no.getText().toString());
+                train_no=list_trains.get(index).getNumber();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return train_no;
+    }
+
+    public String getSourceStationCode(){
+        String stn_code=et_source_code.getText().toString();
+        try {
+            if (list_source_string.contains(et_source_code.getText().toString())) {
+                int index = list_source_string.indexOf(et_source_code.getText().toString());
+                stn_code=list_source_stations.get(index).getCode();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return stn_code;
+    }
+
+    public String getDestinationStationCode(){
+        String stn_code=et_destination.getText().toString();
+        try {
+            if (list_destination_string.contains(et_destination.getText().toString())) {
+                int index = list_destination_string.indexOf(et_destination.getText().toString());
+                stn_code=list_dest_stations.get(index).getCode();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return stn_code;
     }
 
     @Override
@@ -128,14 +198,31 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
     public void parseSeatAvailabilityAPI(String response){
         Log.d(TAG,"seat available:-"+response);
         Gson gson=new Gson();
-        SeatAvailabilityPOJO seatAvailability=gson.fromJson(response,SeatAvailabilityPOJO.class);
+        ll_result.setVisibility(View.GONE);
+        SeatAvailabilityPOJO seatAvailabilityPOJO=gson.fromJson(response,SeatAvailabilityPOJO.class);
         try{
-            if(seatAvailability!=null){
-                if(seatAvailability.getResponse_code().equals("200")){
-                    Log.d(TAG,seatAvailability.toString());
-                    Intent intent=new Intent(SeatAvailability.this,SeatAvailabilityResultAcitivity.class);
-                    intent.putExtra("seatavailabilitypojo",seatAvailability);
-                    startActivity(intent);
+            if(seatAvailabilityPOJO!=null){
+                if(seatAvailabilityPOJO.getResponse_code().equals("200")){
+                    Log.d(TAG,seatAvailabilityPOJO.toString());
+                    ll_result.setVisibility(View.VISIBLE);
+//                    Intent intent=new Intent(SeatAvailability.this,SeatAvailabilityResultAcitivity.class);
+//                    intent.putExtra("seatavailabilitypojo",seatAvailabilityPOJO);
+//                    startActivity(intent);
+                    if(seatAvailabilityPOJO!=null){
+                        tv_train_name.setText(seatAvailabilityPOJO.getTrain_name());
+
+                        tv_from_to.setText(seatAvailabilityPOJO.getFromPOJO().getName()+"("+
+                                seatAvailabilityPOJO.getFromPOJO().getCode()+") to "+
+                                seatAvailabilityPOJO.getToPOJO().getName()+"("+seatAvailabilityPOJO.getToPOJO().getCode()+")");
+
+                        tv_date_train.setText(seatAvailabilityPOJO.getLastUpdatedPOJO().getDate()+" "+
+                                seatAvailabilityPOJO.getLastUpdatedPOJO().getTime());
+
+                        tv_class.setText(seatAvailabilityPOJO.getClassPOJO().getClass_name()+"("+
+                                seatAvailabilityPOJO.getClassPOJO().getClass_code()+")");
+                        List<AvailabilityPOJO> list_availability=seatAvailabilityPOJO.getList_availability();
+                        inflateLinearList(list_availability);
+                    }
                 }
                 else{
                     Toast.makeText(getApplicationContext(),"No Result",Toast.LENGTH_LONG).show();
@@ -151,10 +238,122 @@ public class SeatAvailability extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    public void inflateLinearList(List<AvailabilityPOJO> list_availability){
+        for (int i = 0; i < list_availability.size(); i++) {
+            final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.inflate_seat_availability_result, null);
+            TextView tv_availability = (TextView) view.findViewById(R.id.tv_availability);
+            TextView tv_inflate_date = (TextView) view.findViewById(R.id.tv_inflate_date);
+            LinearLayout ll_available = (LinearLayout) view.findViewById(R.id.ll_available);
+
+            tv_availability.setText(list_availability.get(i).getStatus());
+            tv_inflate_date.setText(list_availability.get(i).getDate());
+
+            ll_availability_scroll.addView(view);
+        }
+    }
+
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         String date=dayOfMonth+"-"+(monthOfYear+1)+"-"+year;
         tv_date.setText(date);
+    }
+
+    public void addTextWatchers(){
+        et_train_no.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_train_no.getText().toString().length()>0){
+                    getTrainList();
+                }
+            }
+        });
+
+        et_source_code.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_source_code.getText().toString().length()>0){
+                    getSourceStationList();
+                }
+            }
+        });
+
+        et_destination.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_destination.getText().toString().length()>0){
+                    getDestinationStationList();
+                }
+            }
+        });
+    }
+    List<String> list_trains_string=new ArrayList<>();
+    List<TrainAutoResultPOJO> list_trains;
+    public void getTrainList(){
+        list_trains=getData.getTrainList(et_train_no.getText().toString());
+        list_trains_string.clear();
+        for(TrainAutoResultPOJO trainAutoResultPOJO:list_trains){
+            list_trains_string.add(trainAutoResultPOJO.getFullName());
+        }
+        Log.d(TAG,list_trains_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_trains_string);
+        et_train_no.setAdapter(adapter);
+    }
+
+    List<String> list_source_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_source_stations;
+    public void getSourceStationList(){
+        list_source_stations=getData.getStationList(et_source_code.getText().toString());
+        list_source_string.clear();
+        for(StationAutocompletePOJO stationAutocompletePOJO:list_source_stations){
+            list_source_string.add(stationAutocompletePOJO.getStation());
+        }
+        Log.d(TAG,list_source_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_source_string);
+        et_source_code.setAdapter(adapter);
+    }
+
+    List<String> list_destination_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_dest_stations;
+    public void getDestinationStationList(){
+        list_dest_stations=getData.getStationList(et_destination.getText().toString());
+        list_destination_string.clear();
+        for(StationAutocompletePOJO stationAutocompletePOJO:list_dest_stations){
+            list_destination_string.add(stationAutocompletePOJO.getStation());
+        }
+        Log.d(TAG,list_destination_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_destination_string);
+        et_destination.setAdapter(adapter);
     }
 
 

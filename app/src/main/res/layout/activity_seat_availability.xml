@@ -8,17 +8,18 @@
     tools:context="com.sundroid.traininfo.activity.SeatAvailability">
 
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/et_train_no"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="TrainNo"/>
-    <EditText
+        android:hint="TrainNo"
+        android:ems="10"/>
+    <AutoCompleteTextView
         android:id="@+id/et_source_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Source"/>
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/et_destination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -95,7 +96,122 @@
             android:text="Search"/>
 
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/ll_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/tv_train_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="train Name" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_date_train"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="train date" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_from_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="train from to" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_class"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Class" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:weightSum="3">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Date" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="2"
+                android:gravity="center">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:id="@+id/ll_availability_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 
 
 </LinearLayout>

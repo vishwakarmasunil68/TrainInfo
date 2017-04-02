@@ -1,11 +1,15 @@
 package com.sundroid.traininfo.activity;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -40,10 +44,11 @@ public class TrainBetweenStationListActivity extends AppCompatActivity {
         }
     }
 
-    public void inflateTrainList(List<TrainPOJO> list_trains){
+    public void inflateTrainList(final List<TrainPOJO> list_trains){
         for (int i = 0; i < list_trains.size(); i++) {
             final LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View view = inflater.inflate(R.layout.inflate_list_train_between, null);
+            CardView cv_train = (CardView) view.findViewById(R.id.cv_train);
             TextView tv_train_name = (TextView) view.findViewById(R.id.tv_train_name);
             TextView tv_from_to_name = (TextView) view.findViewById(R.id.tv_from_to_name);
             TextView tv_from_to_time = (TextView) view.findViewById(R.id.tv_from_to_time);
@@ -89,7 +94,13 @@ public class TrainBetweenStationListActivity extends AppCompatActivity {
 
             tv_running_days.setText(string_running_days);
             tv_class.setText(string_classes);
-
+            final int finalI = i;
+            cv_train.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    showDialog(list_trains.get(finalI).getNumber());
+                }
+            });
             ll_train_list.addView(view);
         }
     }
@@ -122,5 +133,40 @@ public class TrainBetweenStationListActivity extends AppCompatActivity {
             }
         }
         return list_days_added;
+    }
+    public void showDialog(final String train_no){
+        final Dialog dialog1 = new Dialog(TrainBetweenStationListActivity.this, android.R.style.Theme_DeviceDefault_Light_Dialog);
+
+        dialog1.setCancelable(true);
+        dialog1.setContentView(R.layout.dilaog_train_option);
+        dialog1.setTitle("Search For");
+        dialog1.show();
+        dialog1.setCancelable(true);
+        Window window = dialog1.getWindow();
+        window.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        LinearLayout ll_live_train= (LinearLayout) dialog1.findViewById(R.id.ll_live_train);
+        LinearLayout ll_train_route= (LinearLayout) dialog1.findViewById(R.id.ll_train_route);
+
+        ll_live_train.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog1.dismiss();
+                Intent intent=new Intent(TrainBetweenStationListActivity.this,LiveTrainStatusActivity.class);
+                intent.putExtra("train",train_no);
+                startActivity(intent);
+            }
+        });
+
+        ll_train_route.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog1.dismiss();
+                Intent intent=new Intent(TrainBetweenStationListActivity.this,TrainRouteActivity.class);
+                intent.putExtra("trainno",train_no);
+                startActivity(intent);
+            }
+        });
+
     }
 }

@@ -4,17 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.database.GetData;
+import com.sundroid.traininfo.pojo.autocompletestation.StationAutocompletePOJO;
 import com.sundroid.traininfo.pojo.trainbetween.TrainBetweenStationPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
@@ -24,6 +29,7 @@ import org.apache.http.NameValuePair;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,25 +43,30 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.et_source_station)
-    EditText et_source_station;
+    AutoCompleteTextView et_source_station;
     @BindView(R.id.et_dest_station)
-    EditText et_dest_station;
+    AutoCompleteTextView et_dest_station;
     @BindView(R.id.tv_date)
     TextView tv_date;
     @BindView(R.id.btn_search)
     Button btn_search;
 
+    GetData getData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_train_between_station);
         ButterKnife.bind(this);
+
+        getData=new GetData(this);
+
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         tv_date.setOnClickListener(this);
         btn_search.setOnClickListener(this);
+        setTextWatcher();
     }
 
     @Override
@@ -73,8 +84,8 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
         int id=view.getId();
         switch (id){
             case R.id.btn_search:
-//                callAPI();
-                parseTrainBetweenStationResponse(trainapiresponse);
+                callAPI();
+//                parseTrainBetweenStationResponse(trainapiresponse);
                 break;
             case R.id.tv_date:
                 callDateDialog();
@@ -95,8 +106,10 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
     public void callAPI(){
         if(et_source_station.getText().toString().length()>0&&et_dest_station.getText().toString().length()>0
                 &&tv_date.getText().toString().length()>0) {
-            String url = WebUrls.getTrainBetweenStationURL(et_source_station.getText().toString(),
-                    et_dest_station.getText().toString(),tv_date.getText().toString());
+            String source_code=getSourceStationCode();
+            String dest_code=getDestinationStationCode();
+            String url = WebUrls.getTrainBetweenStationURL(source_code,
+                    dest_code,tv_date.getText().toString());
             Log.d(TAG,"url:-"+url);
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             new WebServiceBase(nameValuePairs, this, TRAIN_BETWEEN_STATION).execute(url);
@@ -135,6 +148,97 @@ public class TrainBetweenStationActivity extends AppCompatActivity implements We
                 Log.d(TAG,"error:-"+e.toString());
             }
         }
+    }
+    public void setTextWatcher(){
+        et_source_station.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_source_station.getText().toString().length()>0) {
+                    getSourceStationList();
+                }
+            }
+        });
+
+        et_dest_station.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_dest_station.getText().toString().length()>0) {
+                    getDestinationStationList();
+                }
+            }
+        });
+    }
+    public String getSourceStationCode(){
+        String stn_code=et_source_station.getText().toString();
+        try {
+            if (list_source_string.contains(et_source_station.getText().toString())) {
+                int index = list_source_string.indexOf(et_source_station.getText().toString());
+                stn_code=list_source_stations.get(index).getCode();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return stn_code;
+    }
+    public String getDestinationStationCode(){
+        String stn_code=et_dest_station.getText().toString();
+        try {
+            if (list_destination_string.contains(et_dest_station.getText().toString())) {
+                int index = list_destination_string.indexOf(et_dest_station.getText().toString());
+                stn_code=list_dest_stations.get(index).getCode();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return stn_code;
+    }
+
+    List<String> list_source_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_source_stations;
+    public void getSourceStationList(){
+        list_source_stations=getData.getStationList(et_source_station.getText().toString());
+        list_source_string.clear();
+        for(StationAutocompletePOJO stationAutocompletePOJO:list_source_stations){
+            list_source_string.add(stationAutocompletePOJO.getStation());
+        }
+        Log.d(TAG,list_source_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_source_string);
+        et_source_station.setAdapter(adapter);
+    }
+
+    List<String> list_destination_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_dest_stations;
+    public void getDestinationStationList(){
+        list_dest_stations=getData.getStationList(et_dest_station.getText().toString());
+        list_destination_string.clear();
+        for(StationAutocompletePOJO stationAutocompletePOJO:list_dest_stations){
+            list_destination_string.add(stationAutocompletePOJO.getStation());
+        }
+        Log.d(TAG,list_destination_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_destination_string);
+        et_dest_station.setAdapter(adapter);
     }
 
     @Override

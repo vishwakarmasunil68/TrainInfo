@@ -24,10 +24,12 @@ import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.ToastClass;
 import com.sundroid.traininfo.Utils.WebUrls;
 import com.sundroid.traininfo.database.DBHelper;
+import com.sundroid.traininfo.database.GetData;
 import com.sundroid.traininfo.pojo.autocompletestation.AutoCompleteStationPOJO;
 import com.sundroid.traininfo.pojo.autocompletestation.StationAutocompletePOJO;
 import com.sundroid.traininfo.pojo.trainarrivalatstation.TrainArrivalPOJO;
 import com.sundroid.traininfo.pojo.trainarrivalatstation.TrainPOJO;
+import com.sundroid.traininfo.pojo.trainautocomplete.TrainAutoResultPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -64,6 +66,7 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
     @BindView(R.id.ll_scroll)
     LinearLayout ll_scroll;
     DBHelper dbHelper;
+    GetData getData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +74,31 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
         ButterKnife.bind(this);
 
         dbHelper=new DBHelper(this);
+        getData=new GetData(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         btn_search.setOnClickListener(this);
+//        copydatabase();
+        addTextWatcher();
+    }
 
+    public void callAutoStationCompleteAPI(){
+
+        List<TrainAutoResultPOJO> list_trains=getData.getTrainList(et_station_code.getText().toString());
+        List<String> lis_string=new ArrayList<>();
+        for(TrainAutoResultPOJO trainAutoResultPOJO:list_trains){
+            lis_string.add(trainAutoResultPOJO.getFullName());
+        }
+        Log.d(TAG,lis_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lis_string);
+        et_station_code.setAdapter(adapter);
+
+
+    }
+
+    public void addTextWatcher(){
         et_station_code.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -90,38 +112,38 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(et_station_code.getText().toString().length()==1) {
-                    callAutoStationCompleteAPI();
+                if(et_station_code.getText().toString().length()>0){
+                    getSourceStationList();
                 }
             }
         });
-
-
-        copydatabase();
     }
 
-    public void callAutoStationCompleteAPI(){
-//        List<StationAutocompletePOJO> list=dbHelper.getAllStation();
-//
-//
-//        Collections.sort(list, new Comparator<StationAutocompletePOJO>() {
-//
-//            public int compare(StationAutocompletePOJO o1, StationAutocompletePOJO o2) {
-//                return o1.getFullname().compareTo(o2.getFullname());
-//            }
-//        });
-//
-//        dbHelper.deleteAllStations();
-//
-//        for(StationAutocompletePOJO station:list){
-//            dbHelper.insertstation(station);
-//        }
-        String url = WebUrls.getStationAutoCompleteSuggestURL(et_station_code.getText().toString());
-        Log.d(TAG,"url:-"+url);
-        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        new WebServiceBase(nameValuePairs, this, STATION_AUTO_COMPLETE,false).execute(url);
+    List<String> list_source_string=new ArrayList<>();
+    List<StationAutocompletePOJO> list_source_stations;
+    public void getSourceStationList(){
+        list_source_stations=getData.getStationList(et_station_code.getText().toString());
+        list_source_string.clear();
+        for(StationAutocompletePOJO stationAutocompletePOJO:list_source_stations){
+            list_source_string.add(stationAutocompletePOJO.getStation());
+        }
+        Log.d(TAG,list_source_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_source_string);
+        et_station_code.setAdapter(adapter);
     }
-
+    public String getSourceStationCode(){
+        String stn_code=et_station_code.getText().toString();
+        try {
+            if (list_source_string.contains(et_station_code.getText().toString())) {
+                int index = list_source_string.indexOf(et_station_code.getText().toString());
+                stn_code=list_source_stations.get(index).getCode();
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return stn_code;
+    }
 
     @Override
     public void onClick(View view) {
@@ -139,11 +161,11 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
     public void callTrainAPI() {
         if (et_station_code.getText().toString().length() > 0 && et_hour.getText().toString().length() > 0) {
             Log.d(TAG,"tex:-"+list_of_stations_string.indexOf(et_station_code.getText().toString()));
-//            String url = WebUrls.getTrainArrivalsURL(et_station_code.getText().toString(),
-//                    et_hour.getText().toString() );
-//            Log.d(TAG, "url:-" + url);
-//            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-//            new WebServiceBase(nameValuePairs, this, TRAIN_ARRIVAL_API).execute(url);
+            String url = WebUrls.getTrainArrivalsURL(getSourceStationCode(),
+                    et_hour.getText().toString() );
+            Log.d(TAG, "url:-" + url);
+            ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+            new WebServiceBase(nameValuePairs, this, TRAIN_ARRIVAL_API).execute(url);
         } else {
             Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
         }
@@ -188,12 +210,12 @@ public class TrainArrivalAtStationActivity extends AppCompatActivity implements 
                 list_of_stations.addAll(stationAutocompletePOJOList);
                 for(StationAutocompletePOJO stationAutocompletePOJO:stationAutocompletePOJOList){
                     list_of_stations_string.add(stationAutocompletePOJO.getStation());
-//                    StationAutocompletePOJO stationAutocompletePOJO1=dbHelper.getStationbyStationName(stationAutocompletePOJO.getFullname(),stationAutocompletePOJO.getCode());
-//                    if(stationAutocompletePOJO1!=null&&stationAutocompletePOJO1.getFullname().equals(stationAutocompletePOJO.getFullname())){
-//
-//                    }else{
-//                        dbHelper.insertstation(stationAutocompletePOJO);
-//                    }
+                    StationAutocompletePOJO stationAutocompletePOJO1=dbHelper.getStationbyStationName(stationAutocompletePOJO.getFullname(),stationAutocompletePOJO.getCode());
+                    if(stationAutocompletePOJO1!=null&&stationAutocompletePOJO1.getFullname().equals(stationAutocompletePOJO.getFullname())){
+
+                    }else{
+                        dbHelper.insertstation(stationAutocompletePOJO);
+                    }
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_of_stations_string);
                 et_station_code.setAdapter(adapter);

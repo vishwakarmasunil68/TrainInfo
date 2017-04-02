@@ -5,14 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -22,10 +24,12 @@ import com.google.gson.Gson;
 import com.sundroid.traininfo.R;
 import com.sundroid.traininfo.Utils.ToastClass;
 import com.sundroid.traininfo.Utils.WebUrls;
+import com.sundroid.traininfo.database.GetData;
 import com.sundroid.traininfo.pojo.livetrainstatus.LiveDateStatus;
 import com.sundroid.traininfo.pojo.livetrainstatus.LiveDateTrainPOJO;
 import com.sundroid.traininfo.pojo.livetrainstatus.LiveTrainStatus;
 import com.sundroid.traininfo.pojo.livetrainstatus.Route;
+import com.sundroid.traininfo.pojo.trainautocomplete.TrainAutoResultPOJO;
 import com.sundroid.traininfo.webservices.WebServiceBase;
 import com.sundroid.traininfo.webservices.WebServicesCallBack;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -55,7 +59,7 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.et_train_number)
-    EditText et_train_number;
+    AutoCompleteTextView et_train_number;
     @BindView(R.id.tv_date)
     TextView tv_date;
     @BindView(R.id.btn_search)
@@ -66,10 +70,17 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
     Spinner spinner_date;
     @BindView(R.id.spinner_station)
     Spinner spinner_station;
+    @BindView(R.id.ll_station)
+    LinearLayout ll_station;
+    @BindView(R.id.ll_date)
+    LinearLayout ll_date;
+    @BindView(R.id.btn_route)
+    Button btn_route;
 
 
     String string_date="";
-
+    GetData getData;
+    String train_number="";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +92,7 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
 
         tv_date.setOnClickListener(this);
         btn_search.setOnClickListener(this);
+        getData=new GetData(this);
 
 
         spinner_date.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -105,6 +117,44 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
 
             }
         });
+
+        et_train_number.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(et_train_number.getText().toString().length()>0){
+                    getTrainList();
+                }
+            }
+        });
+
+        Bundle bundle=getIntent().getExtras();
+        if(bundle!=null){
+            train_number=bundle.getString("train");
+            callAPI(train_number);
+            et_train_number.setText(train_number);
+        }
+    }
+    List<String> lis_string=new ArrayList<>();
+    List<TrainAutoResultPOJO> list_trains;
+    public void getTrainList(){
+        list_trains=getData.getTrainList(et_train_number.getText().toString());
+        lis_string.clear();
+        for(TrainAutoResultPOJO trainAutoResultPOJO:list_trains){
+            lis_string.add(trainAutoResultPOJO.getFullName());
+        }
+        Log.d(TAG,lis_string.toString());
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,lis_string);
+        et_train_number.setAdapter(adapter);
     }
 
     public void setOnspinnerChangeListener(){
@@ -181,23 +231,45 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
                 selectDate();
                 break;
             case R.id.btn_search:
-                callAPI();
+                callAPI("");
                 break;
         }
     }
-    public void callAPI(){
-        if(et_train_number.getText().toString().length()>0) {
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMdd");
-            Date d=new Date();
-            Log.d(TAG,"date:-"+sdf.format(d));
-            String url = WebUrls.getLiveTrainURL(et_train_number.getText().toString(), sdf.format(d));
+    public void callAPI(String trainnumber){
+        if(trainnumber.length()>0){
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+            Date d = new Date();
+            Log.d(TAG, "date:-" + sdf.format(d));
+            String url = WebUrls.getLiveTrainURL(trainnumber, sdf.format(d));
             string_date = "";
-            Log.d(TAG,"url:-"+url);
+            Log.d(TAG, "url:-" + url);
             ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             new WebServiceBase(nameValuePairs, this, LIVE_TRAIN_API_CALL).execute(url);
         }
-        else{
-            Toast.makeText(getApplicationContext(),"Please Enter Information Correctly",Toast.LENGTH_LONG).show();
+        else {
+            if (et_train_number.getText().toString().length() > 0) {
+                String train_no = et_train_number.getText().toString();
+                try {
+                    if (lis_string.contains(et_train_number.getText().toString())) {
+                        int index = lis_string.indexOf(et_train_number.getText().toString());
+                        train_no = list_trains.get(index).getNumber();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                Date d = new Date();
+                Log.d(TAG, "date:-" + sdf.format(d));
+                String url = WebUrls.getLiveTrainURL(train_no, sdf.format(d));
+                string_date = "";
+                Log.d(TAG, "url:-" + url);
+                ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+                new WebServiceBase(nameValuePairs, this, LIVE_TRAIN_API_CALL).execute(url);
+            } else {
+                Toast.makeText(getApplicationContext(), "Please Enter Information Correctly", Toast.LENGTH_LONG).show();
+            }
         }
     }
     public void selectDate(){
@@ -240,11 +312,17 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
     List<String> list_of_stations=new ArrayList<>();
     public void parseLiveTrainResponse(String response){
 //        Log.d(TAG,"live train response:-"+response);
+        ll_date.setVisibility(View.GONE);
+        ll_station.setVisibility(View.GONE);
+        btn_route.setVisibility(View.GONE);
         try{
             Gson gson=new Gson();
-            LiveTrainStatus liveTrainStatus=gson.fromJson(response,LiveTrainStatus.class);
+            final LiveTrainStatus liveTrainStatus=gson.fromJson(response,LiveTrainStatus.class);
             if(liveTrainStatus.getResponse_code()==200){
                 Log.d(TAG,liveTrainStatus.toString());
+                ll_date.setVisibility(View.VISIBLE);
+                ll_station.setVisibility(View.VISIBLE);
+                btn_route.setVisibility(View.VISIBLE);
 //                formatStatusAccToDate(liveTrainStatus);
                 list_of_routes.clear();
                 list_of_dates.clear();
@@ -269,6 +347,15 @@ public class LiveTrainStatusActivity extends AppCompatActivity implements View.O
                 ArrayAdapter<String> date_adapter = new ArrayAdapter<String>
                         (this,android.R.layout.simple_spinner_dropdown_item,list_of_dates);
                 spinner_date.setAdapter(date_adapter);
+
+                btn_route.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent=new Intent(LiveTrainStatusActivity.this,TrainRouteActivity.class);
+                        intent.putExtra("trainno",liveTrainStatus.getTrain_number());
+                        startActivity(intent);
+                    }
+                });
 
                 inflateRouteList(liveTrainStatus.getRouteList());
 
